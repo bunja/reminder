@@ -4,37 +4,55 @@ from datetime import datetime
 from num2words import num2words
 
 
-
-num = questionary.text("How much data do you want to enter?").ask()
-num = int(num)
-
-
-reminders = []
-
-while num > 0 :
-    date = questionary.text("Please enter a date (DD.MM.YYYY):").ask()
-    time = questionary.text("Please enter a time (HH:MM):").ask()
+def parse_datetime(date, time):
     dt = date + " " + time
     datetime_object = datetime.strptime(dt, '%d.%m.%Y %H:%M')
-    reminders.append(datetime_object)
-    print()
-    num = num - 1
+    return datetime_object
 
 
-print("Thank you very much. I will notify them!\n...")
+def is_now(now, dt):
+    diff = (now - dt).total_seconds()
+    if diff >= 30:
+        return 'past'
+    if diff < -30:
+        return 'future'
+    return 'now'
 
-reminders.sort()
 
-for i, dt in enumerate(reminders):
+def main():
+    num = questionary.text("How much data do you want to enter?").ask()
+    num = int(num)
+
+
+    reminders = []
+
+    while num > 0 :
+        date = questionary.text("Please enter a date (DD.MM.YYYY):").ask()
+        time = questionary.text("Please enter a time (HH:MM):").ask()
+        datetime_object = parse_datetime(date, time)
+        reminders.append(datetime_object)
+        print()
+        num = num - 1
+
+
+    print("Thank you very much. I will notify them!\n...")
+
+    reminders.sort()
+
+    for i, dt in enumerate(reminders):
+        
+        while True:
+            now = datetime.now()
+            w = is_now(now, dt)
+            if w == 'past' or w == 'now':
+                break
+            else:
+                time.sleep(60)
+
+        strdate = datetime.strftime(dt, '%d.%m.%Y - %H:%M')
+        ord = num2words(i + 1, to='ordinal')
+        print(f"The { ord } date has been reached! ({ strdate })")
+        
     
-    while True:
-        now = datetime.datetime.now()
-        diff = abs((now - dt).total_seconds())
-        if diff <= 60:
-            break
-        else:
-            time.sleep(60)
-
-    strdate = datetime.strftime(dt, '%d.%m.%Y - %H:%M')
-    ord = num2words(i + 1, to='ordinal')
-    print(f"The { ord } date has been reached! ({ strdate })")
+if __name__ == "__main__":
+    main()
