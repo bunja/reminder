@@ -10,13 +10,21 @@ def parse_datetime(date, time):
     return datetime_object
 
 
-def is_now(now, dt):
-    diff = (now - dt).total_seconds()
-    if diff >= 30:
-        return 'past'
-    if diff < -30:
+def is_now(now: datetime, dt: datetime):
+    now = now.replace(second=0, microsecond=0)
+
+    if now == dt:
+        return 'now'
+    if now < dt:
         return 'future'
-    return 'now'
+    else:
+        return 'past'
+    # diff = (now - dt).total_seconds()
+    # if diff >= 30:
+    #     return 'past'
+    # if diff < -30:
+    #     return 'future'
+    # return 'now'
 
 def results(dt, i):
     strdate = datetime.strftime(dt, '%d.%m.%Y - %H:%M')
