@@ -18,6 +18,11 @@ def is_now(now, dt):
         return 'future'
     return 'now'
 
+def results(dt, i):
+    strdate = datetime.strftime(dt, '%d.%m.%Y - %H:%M')
+    ord = num2words(i + 1, to='ordinal')
+    return f"The { ord } date has been reached! ({ strdate })"
+
 
 def main():
     num = questionary.text("How much data do you want to enter?").ask()
@@ -28,8 +33,8 @@ def main():
 
     while num > 0 :
         date = questionary.text("Please enter a date (DD.MM.YYYY):").ask()
-        time = questionary.text("Please enter a time (HH:MM):").ask()
-        datetime_object = parse_datetime(date, time)
+        time_str = questionary.text("Please enter a time (HH:MM):").ask()
+        datetime_object = parse_datetime(date, time_str)
         reminders.append(datetime_object)
         print()
         num = num - 1
@@ -49,9 +54,8 @@ def main():
             else:
                 time.sleep(60)
 
-        strdate = datetime.strftime(dt, '%d.%m.%Y - %H:%M')
-        ord = num2words(i + 1, to='ordinal')
-        print(f"The { ord } date has been reached! ({ strdate })")
+        
+        print(results(dt, i))
         
     
 if __name__ == "__main__":

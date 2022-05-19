@@ -39,6 +39,14 @@ def test_is_now_future():
     test_data = main.parse_datetime('18.05.2022', '22:08')
     now = datetime(year=2022, month=5, day=18, hour=22, minute=6, second=40)
     assert main.is_now(now, test_data) == 'future'
+    
+
+def test_results():
+    dt = datetime(year=2022, month=5, day=18, hour=22, minute=8)
+    actual = main.results(dt, 2)
+    expected = 'The third date has been reached! (18.05.2022 - 22:08)'
+    assert actual == expected
+    
 
  
 
